@@ -10,8 +10,8 @@ services:
     container_name: mysql-master
     # Передача файлов из местной ОС внутрь контейнера
     volumes:
-      - ./master.cnf:/etc/mysql/my.cnf
-      - ./master.sql:/docker-entrypoint-initdb.d/start.sql
+      - ./master/master.cnf:/etc/mysql/my.cnf
+      - ./master/master.sql:/docker-entrypoint-initdb.d/start.sql
       - master_volume:/var/lib/mysql
     # Указываем переменную окружения внутри контейнера
     environment:
@@ -24,8 +24,8 @@ services:
     image: 'percona:8.0'
     container_name: mysql-slave-1
     volumes:
-      - ./slave_1.cnf:/etc/mysql/my.cnf
-      - ./slave.sql:/docker-entrypoint-initdb.d/start.sql
+      - ./slave/slave_1.cnf:/etc/mysql/my.cnf
+      - ./slave/slave.sql:/docker-entrypoint-initdb.d/start.sql
       - slave_1_volume:/var/lib/mysql
     # Указываем, что slave запускается только после успешного запуска master
     depends_on:
@@ -38,8 +38,8 @@ services:
     image: 'percona:8.0'
     container_name: mysql-slave-2
     volumes:
-      - ./slave_2.cnf:/etc/mysql/my.cnf
-      - ./slave.sql:/docker-entrypoint-initdb.d/start.sql
+      - ./slave/slave_2.cnf:/etc/mysql/my.cnf
+      - ./slave/slave.sql:/docker-entrypoint-initdb.d/start.sql
       - slave_2_volume:/var/lib/mysql
     # Указываем, что slave запускается только после успешного запуска master
     depends_on:
@@ -52,8 +52,8 @@ services:
     image: 'percona:8.0'
     container_name: mysql-slave-3
     volumes:
-      - ./slave_3.cnf:/etc/mysql/my.cnf
-      - ./slave.sql:/docker-entrypoint-initdb.d/start.sql
+      - ./slave/slave_3.cnf:/etc/mysql/my.cnf
+      - ./slave/slave.sql:/docker-entrypoint-initdb.d/start.sql
       - slave_3_volume:/var/lib/mysql
     # Указываем, что slave запускается только после успешного запуска master
     depends_on:
