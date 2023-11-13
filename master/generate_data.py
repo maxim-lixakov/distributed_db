@@ -2,6 +2,7 @@
 
 from faker import Faker
 import random
+from datetime import datetime, timedelta
 
 fake = Faker()
 
@@ -162,4 +163,83 @@ fake = Faker()
 
 
 
+# def generate_seat_data(hall_id, cinema_id, seating_capacity):
+#     rows = random.randint(3, 8)
+#     seats_per_row = seating_capacity // rows
+#     central_rows = min(rows, 3)  # Центральные ряды
 
+#     seat_data = []
+
+#     for row_number in range(1, rows + 1):
+#         for seat_number in range(1, seats_per_row + 1):
+#             class_coefficient = 1.2 if row_number <= central_rows else 1.0
+#             seat_id = f"{cinema_id:03d}{hall_id:03d}{row_number:03d}{seat_number:03d}"
+
+#             seat_data.append((seat_id, seat_number, row_number, class_coefficient, hall_id))
+
+#     return seat_data
+
+# # Генерация SQL-запросов для вставки данных в таблицу Seat
+# for cinema_id, hall_id, seating_capacity in [(1, 1, 80), (1, 2, 90), (1, 3, 20)]:
+#     seat_data = generate_seat_data(hall_id, cinema_id, seating_capacity)
+
+#     for seat_id, seat_number, row_number, class_coefficient, hall_id in seat_data:
+#         sql_query = f"INSERT INTO Seat (seat_id, seat_number, `row_number`, class_coefficient, hall_id) " \
+#                     f"VALUES ('{seat_id}', {seat_number}, {row_number}, {class_coefficient}, {hall_id});"
+#         print(sql_query)
+
+
+
+
+
+# Функция для генерации запроса вставки сеанса
+def generate_showtime_query(showtime_id, start_time, end_time, hall_id, film_id, price_coefficient):
+    return f"INSERT INTO Showtime (showtime_id, start_time, end_time, hall_id, film_id, price_coefficient) VALUES ({showtime_id}, '{start_time}', '{end_time}', {hall_id}, {film_id}, {price_coefficient});"
+
+# Генерация запросов на вставку сеансов
+def generate_showtime_queries():
+    showtime_id_counter = 1
+    start_date = datetime(2023, 8, 1)
+    end_date = datetime(2023, 10, 1)
+    hall_id = 1  # Номер зала, который мы заполняем
+    film_ids = list(range(1, 11))
+    random.shuffle(film_ids)
+
+    # Словарь для отслеживания времени окончания последнего сеанса в каждом зале
+    end_times_by_hall = {}
+
+    with open("showtime_insert_queries.sql", "w") as file:
+        while start_date <= end_date:
+            num_sessions = random.randint(5, 7)
+            interval = timedelta(hours=2)  # Интервал между сеансами (2 часа)
+
+            for _ in range(num_sessions):
+                film_id = film_ids.pop(0) if film_ids else random.randint(1, 10)
+
+                # Поставим price_coefficient 1.2 для фильмов 4 и 5
+                price_coefficient = 1.2 if film_id in [4, 5] else 1.0
+
+                # Время начала сеанса
+                start_time = start_date.replace(hour=10, minute=0, second=0)
+
+                # Время окончания последнего сеанса в зале
+                last_end_time = end_times_by_hall.get(hall_id, start_time)
+
+                # Если текущий сеанс начинается до окончания предыдущего, сдвигаем время начала
+                if start_time < last_end_time:
+                    start_time = last_end_time + timedelta(hours=1)  # Интервал в 1 час
+
+                end_time = start_time + interval
+
+                query = generate_showtime_query(showtime_id_counter, start_time, end_time, hall_id, film_id, price_coefficient)
+                file.write(query + "\n")
+                showtime_id_counter += 1
+
+                # Обновляем время окончания последнего сеанса в зале
+                end_times_by_hall[hall_id] = end_time
+
+            # Переходим к следующему дню
+            start_date += timedelta(days=1)
+
+# Запуск генерации запросов
+generate_showtime_queries()
