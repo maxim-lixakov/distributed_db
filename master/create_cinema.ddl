@@ -101,6 +101,7 @@ CREATE TABLE Showtime
     end_time TIMESTAMP NOT NULL,
     hall_id INT NOT NULL,
     film_id INT NOT NULL,
+	price_coefficient DOUBLE NOT NULL,
     PRIMARY KEY (showtime_id),
     FOREIGN KEY (hall_id) REFERENCES Hall(hall_id),
     FOREIGN KEY (film_id) REFERENCES Film(film_id)

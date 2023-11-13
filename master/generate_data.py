@@ -192,54 +192,81 @@ fake = Faker()
 
 
 
-# Функция для генерации запроса вставки сеанса
-def generate_showtime_query(showtime_id, start_time, end_time, hall_id, film_id, price_coefficient):
-    return f"INSERT INTO Showtime (showtime_id, start_time, end_time, hall_id, film_id, price_coefficient) VALUES ({showtime_id}, '{start_time}', '{end_time}', {hall_id}, {film_id}, {price_coefficient});"
+# # Функция для генерации запроса вставки сеанса
+# def generate_showtime_query(showtime_id, start_time, end_time, hall_id, film_id, price_coefficient):
+#     return f"INSERT INTO Showtime (showtime_id, start_time, end_time, hall_id, film_id, price_coefficient) VALUES ({showtime_id}, '{start_time}', '{end_time}', {hall_id}, {film_id}, {price_coefficient});"
 
-# Генерация запросов на вставку сеансов
-def generate_showtime_queries():
-    showtime_id_counter = 1
-    start_date = datetime(2023, 8, 1)
-    end_date = datetime(2023, 10, 1)
-    hall_id = 1  # Номер зала, который мы заполняем
-    film_ids = list(range(1, 11))
-    random.shuffle(film_ids)
+# # Генерация запросов на вставку сеансов
+# def generate_showtime_queries():
+#     showtime_id_counter = 1
+#     start_date = datetime(2023, 8, 1)
+#     end_date = datetime(2023, 10, 1)
+#     hall_id = 9  # Номер зала, который мы заполняем
+#     film_ids = list(range(1, 11))
+#     random.shuffle(film_ids)
 
-    # Словарь для отслеживания времени окончания последнего сеанса в каждом зале
-    end_times_by_hall = {}
+#     # Словарь для отслеживания времени окончания последнего сеанса в каждом зале
+#     end_times_by_hall = {}
 
-    with open("showtime_insert_queries.sql", "w") as file:
-        while start_date <= end_date:
-            num_sessions = random.randint(5, 7)
-            interval = timedelta(hours=2)  # Интервал между сеансами (2 часа)
+#     with open("showtime_insert_queries.sql", "w") as file:
+#         while start_date <= end_date:
+#             num_sessions = random.randint(5, 7)
+#             interval = timedelta(hours=2)  # Интервал между сеансами (2 часа)
 
-            for _ in range(num_sessions):
-                film_id = film_ids.pop(0) if film_ids else random.randint(1, 10)
+#             for _ in range(num_sessions):
+#                 film_id = film_ids.pop(0) if film_ids else random.randint(1, 10)
 
-                # Поставим price_coefficient 1.2 для фильмов 4 и 5
-                price_coefficient = 1.2 if film_id in [4, 5] else 1.0
+#                 # Поставим price_coefficient 1.2 для фильмов 4 и 5
+#                 price_coefficient = 1.2 if film_id in [4, 5] else 1.0
 
-                # Время начала сеанса
-                start_time = start_date.replace(hour=10, minute=0, second=0)
+#                 # Время начала сеанса
+#                 start_time = start_date.replace(hour=10, minute=0, second=0)
 
-                # Время окончания последнего сеанса в зале
-                last_end_time = end_times_by_hall.get(hall_id, start_time)
+#                 # Время окончания последнего сеанса в зале
+#                 last_end_time = end_times_by_hall.get(hall_id, start_time)
 
-                # Если текущий сеанс начинается до окончания предыдущего, сдвигаем время начала
-                if start_time < last_end_time:
-                    start_time = last_end_time + timedelta(hours=1)  # Интервал в 1 час
+#                 # Если текущий сеанс начинается до окончания предыдущего, сдвигаем время начала
+#                 if start_time < last_end_time:
+#                     start_time = last_end_time + timedelta(hours=1)  # Интервал в 1 час
 
-                end_time = start_time + interval
+#                 end_time = start_time + interval
 
-                query = generate_showtime_query(showtime_id_counter, start_time, end_time, hall_id, film_id, price_coefficient)
-                file.write(query + "\n")
-                showtime_id_counter += 1
+#                 query = generate_showtime_query(showtime_id_counter, start_time, end_time, hall_id, film_id, price_coefficient)
+#                 file.write(query + "\n")
+#                 showtime_id_counter += 1
 
-                # Обновляем время окончания последнего сеанса в зале
-                end_times_by_hall[hall_id] = end_time
+#                 # Обновляем время окончания последнего сеанса в зале
+#                 end_times_by_hall[hall_id] = end_time
 
-            # Переходим к следующему дню
-            start_date += timedelta(days=1)
+#             # Переходим к следующему дню
+#             start_date += timedelta(days=1)
 
-# Запуск генерации запросов
-generate_showtime_queries()
+# # Запуск генерации запросов
+# generate_showtime_queries()
+
+
+import re
+
+def generate_unique_values(input_file, output_file):
+    with open(input_file, 'r') as input_file:
+        content = input_file.read()
+
+    # Ищем все строки, начинающиеся с INSERT INTO Showtime
+    pattern = r"INSERT INTO Showtime \(([^)]+)\) VALUES \(([^)]+)\);"
+    matches = re.finditer(pattern, content)
+
+    # Открываем файл для записи
+    with open(output_file, 'w') as output_file:
+        showtime_id_counter = 1
+
+        # Заменяем значения и записываем в новый файл
+        for match in matches:
+            fields = match.group(2).split(", ")
+            fields[0] = str(showtime_id_counter)  # Заменяем первое значение (showtime_id)
+            showtime_id_counter += 1
+
+            # Записываем в новый файл
+            output_file.write(f"INSERT INTO Showtime ({match.group(1)}) VALUES ({', '.join(fields)});\n")
+
+# Запуск функции с указанием входного и выходного файлов
+generate_unique_values("showtime_insert_queries.sql", "output_showtime_insert_queries.sql")

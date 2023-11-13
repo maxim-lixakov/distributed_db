@@ -3,8 +3,8 @@ CREATE TABLE Cinema
     cinema_id INT NOT NULL,
     name VARCHAR(50) NOT NULL,
     address VARCHAR(100) NOT NULL,
-    operating_hours_start TIMESTAMP NOT NULL,
-    operating_hours_end TIMESTAMP NOT NULL,
+    operating_hours_start TIME NOT NULL,
+    operating_hours_end TIME NOT NULL,
     contact_number VARCHAR(12) NOT NULL,
     PRIMARY KEY (cinema_id)
 );
