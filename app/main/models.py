@@ -18,7 +18,7 @@ class Cinema(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Cinema'
+        db_table = 'cinema'
 
 
 class Country(models.Model):
@@ -27,7 +27,7 @@ class Country(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Country'
+        db_table = 'country'
 
 
 class Customer(models.Model):
@@ -39,7 +39,7 @@ class Customer(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Customer'
+        db_table = 'customer'
 
 
 class Film(models.Model):
@@ -50,7 +50,7 @@ class Film(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Film'
+        db_table = 'film'
 
 
 class FilmGenre(models.Model):
@@ -59,7 +59,7 @@ class FilmGenre(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Film_genre'
+        db_table = 'film_genre'
         unique_together = (('film', 'genre'),)
 
 
@@ -69,7 +69,7 @@ class Genre(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Genre'
+        db_table = 'genre'
 
 
 class Hall(models.Model):
@@ -79,7 +79,7 @@ class Hall(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Hall'
+        db_table = 'hall'
 
 
 class ProductionCountry(models.Model):
@@ -88,7 +88,7 @@ class ProductionCountry(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Production_country'
+        db_table = 'production_country'
         unique_together = (('film', 'country'),)
 
 
@@ -101,7 +101,7 @@ class Seat(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Seat'
+        db_table = 'seat'
 
 
 class Seller(models.Model):
@@ -116,7 +116,7 @@ class Seller(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Seller'
+        db_table = 'seller'
 
 
 class Showtime(models.Model):
@@ -128,7 +128,7 @@ class Showtime(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Showtime'
+        db_table = 'showtime'
 
 
 class Ticket(models.Model):
@@ -143,4 +143,4 @@ class Ticket(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'Ticket'
+        db_table = 'ticket'
