@@ -16,7 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from main.views import add_cinema, success
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('admin_tools_stats/', include('admin_tools_stats.urls')),
+    path('add-cinema/', add_cinema, name='add_cinema'),
+    path('success/', success, name='success_url'),
 ]
