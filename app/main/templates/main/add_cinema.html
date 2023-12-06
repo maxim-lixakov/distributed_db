@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Cinema</title>
+</head>
+<body>
+<h1>Добавить кинотеатр</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Cinema</button>
+</form>
+</body>
+</html>

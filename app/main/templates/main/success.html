@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Replication Status</title>
+  <style>
+    .container {
+      margin: 20px;
+    }
+    .block {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .block img {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="container" id="replicationStatus">
+  <!-- Blocks will be added here -->
+</div>
+
+<script>
+  let count = 1;
+  const interval = setInterval(function() {
+    if (count <= 3) {
+      const container = document.getElementById('replicationStatus');
+      const block = document.createElement('div');
+      block.className = 'block';
+      block.innerHTML = `
+                    <img src="{% static 'main/database-icon.png' %}" alt="Database" width="50">
+                    <p>Data is replicated to slave node ${count}</p>
+                `;
+      container.appendChild(block);
+      count++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 3000);
+</script>
+</body>
+</html>
